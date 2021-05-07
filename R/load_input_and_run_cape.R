@@ -7,7 +7,7 @@
 #' @param yaml_params a parameter set up in the form of a YAML string
 #' @param results_path path to the results
 #' @param run_parallel boolean, if TRUE runs certain parts of the code as parallel blocks
-#' @param results_file the name of the saved data_obj RData file. The base name is used as the base name for all saved RData files.
+#' @param results_file the name of the saved data_obj RDS file. The base name is used as the base name for all saved RDS files.
 #' @param p_or_q A threshold indicating the maximum adjusted p value considered 
 #' @param n_cores integer, default is 4
 #' @param initialize_only boolean, default: FALSE
@@ -28,7 +28,7 @@
 #' 
 #' @export
 load_input_and_run_cape <- function(input_file = NULL, yaml_params = NULL, results_path = NULL,
-                                    run_parallel = FALSE, results_file = "cross.RData", p_or_q = 0.05, 
+                                    run_parallel = FALSE, results_file = "cross.RDS", p_or_q = 0.05, 
                                     n_cores = 4, initialize_only = FALSE, verbose = TRUE, create_report = FALSE){
 
   if (endsWith(input_file, ".yaml") || endsWith(input_file, ".json") || endsWith(input_file, ".yml")) {
@@ -67,8 +67,8 @@ load_input_and_run_cape <- function(input_file = NULL, yaml_params = NULL, resul
   if(create_report) {
     cat("Rendering result page...\n")
     # copy result page rmd to result folder. The file in in the resource folder of the project running this method.
-    cape_result_path <- file.path(here("resource"), "cape_results.Rmd")
-    file.copy(cape_result_path, results_path, overwrite = TRUE)
+    # we hardcoded the place where the markdown file is located on the production VM
+    file.copy("/opt/cape/cape/cape_results.Rmd", results_path, overwrite = TRUE)
     # render result page
     rmarkdown::render(file.path(results_path, "cape_results.Rmd"), params = list(results_dir = results_path))
     cat("Result page rendered.\n")
